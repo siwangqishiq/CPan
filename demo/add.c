@@ -25,6 +25,10 @@ int convertCharToInt(char c)
 	return c-'0';
 }
 
+char convertIntToChar(int i) {
+	return i + '0';
+}
+
 //两结点数据相加 返回新结点 
 //
 int nodeValueAdd(Node *node1,Node *node2,int lowValueOverflow,Node **out,int *overflowValue)
@@ -194,9 +198,9 @@ int addNum(Link *pNumOne,Link *pNumTwo,Link **result){
 }
 
 //创建Link结构体
-int createLink(char *numStr,Link **link)
+int createLink(const char *numStr,Link **link)
 {
-	char *pStr = numStr;
+	const char *pStr = numStr;
 	
 	Link *tempLink = (Link *)malloc(sizeof(Link));
 	if(tempLink == NULL)
@@ -305,10 +309,55 @@ void printReorder(Link *pLink)
 	printf("\n");
 }
 
+int converLinkToChar(Link *pLink, char **out) {
+	Node *p = pLink->head;
+	int index = 0;
+
+	char *tempOut = (char *) malloc((pLink->length + 1) * sizeof(char));
+
+	if (tempOut == NULL) {
+		printf("error malloc temp\n");
+		return ERROR;
+	}
+
+	while (p != NULL) {
+		tempOut[index] = convertIntToChar(p->data);
+		p = p->next;
+		index++;
+	} //end while
+	*(tempOut + index) = '\0';
+
+	*out = tempOut;
+
+	return SUCCESS;
+}
+
+char *add(const char *add1, const char *add2) {
+	Link *pLinkNum1 = NULL; //运算数字1
+	Link *pLinkNum2 = NULL;
+	Link *pResultNum = NULL; //结果
+
+	createLink(add1, &pLinkNum1);
+	createLink(add2, &pLinkNum2);
+	//运算
+	addNum(pLinkNum1, pLinkNum2, &pResultNum);
+
+	char *ret = NULL;
+	converLinkToChar(pResultNum, &ret);
+
+	releaseLink(pLinkNum1);
+	releaseLink(pLinkNum2);
+	releaseLink(pResultNum);
+
+	return ret;
+}
+
+
+
 int main()
 {
-	char addNum1[MAX_SIZE];
-	char addNum2[MAX_SIZE];
+	//char addNum1[MAX_SIZE];
+	//char addNum2[MAX_SIZE];
 
 	//printf("input num1 :\n");
 	//scanf("%s",addNum1);
@@ -330,7 +379,7 @@ int main()
 	
 	//releaseLink(pLink);
 
-	Link *pLinkNum1  = NULL;//运算数字1
+	/*Link *pLinkNum1  = NULL;//运算数字1
 	Link *pLinkNum2  = NULL;
 	Link *pResultNum = NULL;//结果
 	createLink("100000000000000000000000000000000000000000000000000000000000",&pLinkNum1);
@@ -342,7 +391,13 @@ int main()
 
 	releaseLink(pLinkNum1);
 	releaseLink(pLinkNum2);
-	releaseLink(pResultNum);
+	releaseLink(pResultNum);*/
+
+
+	char *result = add("123", "1000");
+
+	printf("result = %s",result);
+
 
 	system("pause");
 	return SUCCESS;
